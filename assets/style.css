@@ -649,12 +649,14 @@ body.login {
 .lf button {
   padding: 13px;
 }
+/* START CR: JF/ICT/24/26 - Login password eye-toggle styling */
 .password-field {
   position: relative;
 }
 .password-field input {
   padding-right: 48px;
 }
+
 .lf .password-eye {
   position: absolute;
   top: 50%;
@@ -699,6 +701,7 @@ body.login {
   outline: 3px solid var(--ink2);
   outline-offset: 1px;
 }
+/* END CR: JF/ICT/24/26 - Login password eye-toggle styling */
 /* tablet + mobile */
 .idlookup {
   width: 100%;

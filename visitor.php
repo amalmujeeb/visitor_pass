@@ -25,6 +25,7 @@ $vs = $pdo->prepare("SELECT t.*,a.name ein,b.name eout FROM visits t JOIN staff 
 $vs->execute([$id]);
 $rows = $vs->fetchAll();
 $m = fn ($x) => $x ? ($x == 'qr' ? 'QR scan' : 'Manual') : '-';
+// START CR: JF/ICT/24/08 - Visit duration calculation
 $duration = function ($entry, $exit) {
     if (!$exit) {
         return 'In progress';
@@ -35,6 +36,7 @@ $duration = function ($entry, $exit) {
     $mins = $minutes % 60;
     return ($days ? $days.'d ' : '').($hours ? $hours.'h ' : '').$mins.'m';
 };
+// END CR: JF/ICT/24/08 - Visit duration calculation
 ?>
 <div class="card profile">
     <div class="pf-main">
@@ -58,6 +60,7 @@ $duration = function ($entry, $exit) {
         <a class="btn alt" href="register.php?id=<?=$v['id']?>">Edit details</a>
     </div>
 </div>
+<!-- START CR: JF/ICT/24/08 - Visit duration in visitor profile -->
 <div class="card scroll">
     <h2>Visit history for #<?=$v['id']?> (<?=count($rows)?> visit<?=count($rows) == 1 ? '' : 's'?>)</h2>
     <table>
@@ -71,4 +74,5 @@ if (!$rows) {
 ?>
     </table>
 </div>
+<!-- END CR: JF/ICT/24/08 - Visit duration in visitor profile -->
 <?php bottom();

@@ -29,6 +29,7 @@ $s = $pdo->prepare("SELECT v.id vid,v.name,v.host,t.entry_time,t.exit_time,t.ent
 $s->execute($a);
 $rows = $s->fetchAll();
 $m = fn ($x) => $x ? ($x == 'qr' ? 'QR scan' : 'Manual') : '-';
+// START CR: JF/ICT/24/08 - Visit duration calculation
 $duration = function ($entry, $exit) {
     if (!$exit) {
         return 'In progress';
@@ -39,6 +40,8 @@ $duration = function ($entry, $exit) {
     $mins = $minutes % 60;
     return ($days ? $days.'d ' : '').($hours ? $hours.'h ' : '').$mins.'m';
 };
+// END CR: JF/ICT/24/08 - Visit duration calculation
+// START CR: JF/ICT/24/15 - Filtered visit history CSV export
 if (($_GET['export'] ?? '') === 'csv') {
     header('Content-Type: text/csv; charset=utf-8');
     header('Content-Disposition: attachment; filename="visit-history.csv"');
@@ -47,11 +50,13 @@ if (($_GET['export'] ?? '') === 'csv') {
     fwrite($out, "\xEF\xBB\xBF");
     fputcsv($out, ['Visit ID', 'Visitor', 'Host', 'Entry time', 'Entry method', 'Entry by', 'Exit time', 'Exit method', 'Exit by', 'Duration']);
     foreach ($rows as $r) {
+        // JF/ICT/24/08: Include the calculated visit duration in the CSV.
         fputcsv($out, [$r['vid'], $r['name'], $r['host'], $r['entry_time'], $m($r['entry_method']), $r['ein'], $r['exit_time'] ?: 'Still inside', $m($r['exit_method']), $r['eout'] ?: '-', $duration($r['entry_time'], $r['exit_time'])]);
     }
     fclose($out);
     exit;
 }
+// END CR: JF/ICT/24/15 - Filtered visit history CSV export
 top('Visitor history');
 ?>
 <form class="card idlookup" action="visitor.php">
@@ -69,8 +74,11 @@ top('Visitor history');
     <input type="date" name="from" value="<?=h($f)?>">
     <input type="date" name="to" value="<?=h($t)?>">
     <button>Search</button>
+    <!-- START CR: JF/ICT/24/15 - CSV export button -->
     <button type="submit" name="export" value="csv" formtarget="_blank">Download CSV</button>
+    <!-- END CR: JF/ICT/24/15 - CSV export button -->
 </form>
+<!-- START CR: JF/ICT/24/08 - Visit duration in history table -->
 <div class="card scroll">
     <table>
         <tr><th>ID</th><th>Visitor</th><th>Host</th><th>Entry</th><th>Entry by</th><th>Exit</th><th>Exit by</th><th>Duration</th></tr>
@@ -83,4 +91,5 @@ if (!$rows) {
 ?>
     </table>
 </div>
+<!-- END CR: JF/ICT/24/08 - Visit duration in history table -->
 <?php bottom();

@@ -40,6 +40,7 @@ if ($_POST) {
             Email
             <input type="email" name="email" placeholder="you@company.com" required autofocus>
         </label>
+        <!-- START CR: JF/ICT/24/26 - Login password visibility toggle -->
         <label>
             Password
             <div class="password-field">
@@ -50,8 +51,10 @@ if ($_POST) {
                 </button>
             </div>
         </label>
+        <!-- END CR: JF/ICT/24/26 - Login password visibility toggle -->
         <button>Sign in</button>
     </form>
+    <!-- START CR: JF/ICT/24/26 - Password toggle behaviour -->
     <script>
         const passwordInput = document.getElementById('password');
         const togglePassword = document.getElementById('togglePassword');
@@ -74,5 +77,6 @@ if ($_POST) {
             eyeClosed.hidden = !showPassword;
         });
     </script>
+    <!-- END CR: JF/ICT/24/26 - Password toggle behaviour -->
 </body>
 </html>
